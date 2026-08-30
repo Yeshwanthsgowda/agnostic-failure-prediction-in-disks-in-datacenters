@@ -1,0 +1,79 @@
+{
+  "tier": 1,
+  "classification": "HEAD_PREAMP_INSTABILITY",
+  "execution_mode": "SYNCHRONOUS_OFFLINE_DETERMINISTIC",
+  "latency_sla_ms": "< 1.0",
+  "serial_number": "S300TS9Z",
+  "drive_model": "ST4000DM000",
+  "risk_level": "critical",
+  "failure_probability_pct": 100.0,
+  "storage_blast_radius": {
+    "affected_zfs_pool": "zpool-data-pod-04",
+    "affected_ceph_osd": "osd.547",
+    "redundancy_state": "DEGRADED_PARITY_MAINTAINED",
+    "active_vm_mounts": [
+      "/mnt/fast-storage-01",
+      "/var/lib/docker/volumes"
+    ]
+  },
+  "sop_remediation_runbook": {
+    "action": "PROACTIVE_DRIVE_EVACUATION",
+    "commands": [
+      "ceph osd out osd.547",
+      "zfs set offline zpool-data-pod-04 S300TS9Z",
+      "datacenter-cli ticket create --priority P1 --device S300TS9Z --slot /rack12/slot04"
+    ]
+  },
+  "verified_telemetry_summary": [
+    {
+      "rank": 1,
+      "smart_id": "SMART 242",
+      "name": "Total LBAs Read",
+      "detail": "Total data read lifetime",
+      "total_shap": 2.7185,
+      "last_value": 131364831232.0,
+      "trend": "rising",
+      "impact": "Increases Risk"
+    },
+    {
+      "rank": 2,
+      "smart_id": "SMART 9",
+      "name": "Power-On Hours",
+      "detail": "Total operational lifetime",
+      "total_shap": 2.0586,
+      "last_value": 30076.0,
+      "trend": "rising",
+      "impact": "Increases Risk"
+    },
+    {
+      "rank": 3,
+      "smart_id": "SMART 187",
+      "name": "Reported Uncorrectable Errors",
+      "detail": "Errors ECC could not correct \u2014 critical signal",
+      "total_shap": 2.0493,
+      "last_value": 4.0,
+      "trend": "stable",
+      "impact": "Increases Risk"
+    },
+    {
+      "rank": 4,
+      "smart_id": "SMART 241",
+      "name": "Total LBAs Written",
+      "detail": "Total data written lifetime",
+      "total_shap": 1.6853,
+      "last_value": 55059361792.0,
+      "trend": "rising",
+      "impact": "Increases Risk"
+    },
+    {
+      "rank": 5,
+      "smart_id": "SMART 240",
+      "name": "Head Flying Hours",
+      "detail": "Head in-flight operational hours",
+      "total_shap": 1.332,
+      "last_value": 30035.0,
+      "trend": "rising",
+      "impact": "Increases Risk"
+    }
+  ]
+}

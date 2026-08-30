@@ -1,0 +1,11 @@
+{
+  "serial_number": "S300TS9Z",
+  "drive_model": "ST4000DM000",
+  "failure_probability": 1.0,
+  "failure_probability_pct": 100.0,
+  "risk_level": "critical",
+  "predicted_failure": true,
+  "threshold_applied": 0.6551,
+  "status": "predicted",
+  "evaluation_timestamp": "2026-08-30T21:44:46.677442"
+}

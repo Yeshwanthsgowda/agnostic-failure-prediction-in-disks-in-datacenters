@@ -1,0 +1,6 @@
+rank,smart_id,name,detail,total_shap,last_value,trend,impact
+1,SMART 242,Total LBAs Read,Total data read lifetime,2.7185,131364831232.0,rising,Increases Risk
+2,SMART 9,Power-On Hours,Total operational lifetime,2.0586,30076.0,rising,Increases Risk
+3,SMART 187,Reported Uncorrectable Errors,Errors ECC could not correct — critical signal,2.0493,4.0,stable,Increases Risk
+4,SMART 241,Total LBAs Written,Total data written lifetime,1.6853,55059361792.0,rising,Increases Risk
+5,SMART 240,Head Flying Hours,Head in-flight operational hours,1.332,30035.0,rising,Increases Risk

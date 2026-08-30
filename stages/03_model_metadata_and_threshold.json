@@ -1,0 +1,20 @@
+{
+  "drive_model": "ST4000DM000",
+  "model_type": "XGBoost",
+  "optimal_threshold": 0.6551,
+  "metrics": {
+    "best_threshold": 0.6551,
+    "accuracy": 0.9943,
+    "precision_failure": 0.8911,
+    "recall_failure": 0.7563,
+    "f1_failure": 0.8182,
+    "roc_auc": 0.969,
+    "precision_failure_at_0_5": 0.8426,
+    "recall_failure_at_0_5": 0.7647,
+    "f1_failure_at_0_5": 0.8018
+  },
+  "total_training_drives": null,
+  "failing_training_drives": null,
+  "scale_pos_weight": null,
+  "total_features": 210
+}
