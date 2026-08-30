@@ -830,109 +830,102 @@ def render_tab1(tab):
 
         st.divider()
 
-        # ── Layout: Table (left 3 cols) + Drive Inspector (right 1 col) ──
-        col_table, col_select = st.columns([3, 1])
+        # ── 1. Live Telemetry Stream (Full Width) ──
+        st.markdown("#### Live Telemetry Stream")
 
-        with col_select:
-            st.markdown("#### Drive Inspector")
+        display_cols = [
+            "sim_day", "timestamp", "drive_model", "serial_number",
+            "prob_display", "risk_level", "prediction",
+        ]
+        display_df = history[display_cols].copy()
+        display_df.columns = [
+            "Day", "Date", "Drive Model", "Serial Number",
+            "Failure Probability", "Risk Level", "Prediction",
+        ]
 
-            # Get all unique drives present in history
-            all_serials = (
-                history.sort_values("sim_day", ascending=False)
-                .drop_duplicates("serial_number")[["serial_number", "drive_model", "risk_level", "probability_pct", "prob_display"]]
-                .reset_index(drop=True)
-            )
-
-            options = all_serials["serial_number"].tolist()
-
-            def _format_option(sn):
-                match = all_serials[all_serials["serial_number"] == sn]
-                if match.empty:
-                    return sn
-                row = match.iloc[0]
-                risk = row["risk_level"]
-                model = row["drive_model"]
-                if risk == "BUFFERING":
-                    return f"[...] {sn} ({model}) — Buffering"
-                if risk == "UNREGISTERED":
-                    return f"[?] {sn} ({model}) — No Model"
-                icon = {"CRITICAL": "[!]", "WARNING": "[~]", "HEALTHY": "[OK]"}.get(risk, "[ ]")
-                return f"{icon} {sn} ({model}) — {row['probability_pct']:.1f}%"
-
-            current_idx = 0
-            if st.session_state.selected_serial in options:
-                current_idx = options.index(st.session_state.selected_serial)
-
-            chosen = st.selectbox(
-                "Select Drive to Inspect",
-                options=options,
-                index=current_idx,
-                format_func=_format_option,
-                key="drive_inspector_select",
-            )
-
-            if chosen != st.session_state.selected_serial:
-                st.session_state.selected_serial = chosen
-                match = all_serials[all_serials["serial_number"] == chosen]
-                if not match.empty:
-                    st.session_state.selected_model = match.iloc[0]["drive_model"]
-                st.rerun()
-
-            # Display Drive Information Card
-            if st.session_state.selected_serial:
-                sel_sn   = st.session_state.selected_serial
-                sel_rows = history[history["serial_number"] == sel_sn]
-
-                if not sel_rows.empty:
-                    latest   = sel_rows.sort_values("sim_day").iloc[-1]
-                    risk     = latest["risk_level"]
-                    prob_str = latest["prob_display"]
-                    model_nm = latest["drive_model"]
-                    risk_cls = f"risk-{risk.lower()}" if risk in ("CRITICAL", "WARNING", "HEALTHY", "BUFFERING") else "risk-healthy"
-
-                    st.markdown("---")
-                    st.markdown(f"**Drive Model:** `{model_nm}`")
-                    st.markdown(f"**Serial:** `{sel_sn}`")
-                    st.markdown(
-                        f"**Current Status:** <span class='{risk_cls}'>{risk}</span>",
-                        unsafe_allow_html=True,
-                    )
-                    st.markdown(f"**Failure Risk:** `{prob_str}`")
-                    st.markdown(f"**Days Observed:** `{len(sel_rows)} / 20`")
-
-        with col_table:
-            st.markdown("#### Live Telemetry Stream")
-
-            # Display columns — most recent day first
-            display_cols = [
-                "sim_day", "timestamp", "drive_model", "serial_number",
-                "prob_display", "risk_level", "prediction",
-            ]
-            display_df = history[display_cols].copy()
-            display_df.columns = [
-                "Day", "Date", "Drive Model", "Serial Number",
-                "Failure Probability", "Risk Level", "Prediction",
-            ]
-
-            st.dataframe(
-                display_df.sort_values(["Day", "Drive Model"], ascending=[False, True]),
-                use_container_width=True,
-                hide_index=True,
-                height=340,
-                column_config={
-                    "Day": st.column_config.NumberColumn("Day", width="small"),
-                    "Date": st.column_config.TextColumn("Date", width="small"),
-                    "Drive Model": st.column_config.TextColumn("Drive Model", width="medium"),
-                    "Serial Number": st.column_config.TextColumn("Serial Number", width="medium"),
-                    "Failure Probability": st.column_config.TextColumn("Failure Prob", width="medium"),
-                    "Risk Level": st.column_config.TextColumn("Risk Level", width="small"),
-                    "Prediction": st.column_config.TextColumn("Prediction", width="small"),
-                },
-            )
+        st.dataframe(
+            display_df.sort_values(["Day", "Drive Model"], ascending=[False, True]),
+            use_container_width=True,
+            hide_index=True,
+            height=300,
+            column_config={
+                "Day": st.column_config.NumberColumn("Day", width="small"),
+                "Date": st.column_config.TextColumn("Date", width="small"),
+                "Drive Model": st.column_config.TextColumn("Drive Model", width="medium"),
+                "Serial Number": st.column_config.TextColumn("Serial Number", width="medium"),
+                "Failure Probability": st.column_config.TextColumn("Failure Probability", width="medium"),
+                "Risk Level": st.column_config.TextColumn("Risk Level", width="small"),
+                "Prediction": st.column_config.TextColumn("Prediction", width="small"),
+            },
+        )
 
         st.divider()
 
-        # ── Probability Timeline Chart ──
+        # ── 2. Drive Inspector (Full Width below Stream) ──
+        st.markdown("#### Drive Inspector")
+
+        all_serials = (
+            history.sort_values("sim_day", ascending=False)
+            .drop_duplicates("serial_number")[["serial_number", "drive_model", "risk_level", "probability_pct", "prob_display"]]
+            .reset_index(drop=True)
+        )
+
+        options = all_serials["serial_number"].tolist()
+
+        def _format_option(sn):
+            match = all_serials[all_serials["serial_number"] == sn]
+            if match.empty:
+                return sn
+            row = match.iloc[0]
+            risk = row["risk_level"]
+            model = row["drive_model"]
+            if risk == "BUFFERING":
+                return f"[...] {sn} ({model}) — Buffering"
+            if risk == "UNREGISTERED":
+                return f"[?] {sn} ({model}) — No Model"
+            icon = {"CRITICAL": "[!]", "WARNING": "[~]", "HEALTHY": "[OK]"}.get(risk, "[ ]")
+            return f"{icon} {sn} ({model}) — {row['probability_pct']:.1f}%"
+
+        current_idx = 0
+        if st.session_state.selected_serial in options:
+            current_idx = options.index(st.session_state.selected_serial)
+
+        chosen = st.selectbox(
+            "Select Drive to Inspect",
+            options=options,
+            index=current_idx,
+            format_func=_format_option,
+            key="drive_inspector_select",
+        )
+
+        if chosen != st.session_state.selected_serial:
+            st.session_state.selected_serial = chosen
+            match = all_serials[all_serials["serial_number"] == chosen]
+            if not match.empty:
+                st.session_state.selected_model = match.iloc[0]["drive_model"]
+            st.rerun()
+
+        # Display Selected Drive Metrics & Status in a clean 5-column card row
+        if st.session_state.selected_serial:
+            sel_sn   = st.session_state.selected_serial
+            sel_rows = history[history["serial_number"] == sel_sn]
+
+            if not sel_rows.empty:
+                latest   = sel_rows.sort_values("sim_day").iloc[-1]
+                risk     = latest["risk_level"]
+                prob_str = latest["prob_display"]
+                model_nm = latest["drive_model"]
+
+                m1, m2, m3, m4, m5 = st.columns(5)
+                m1.metric("Selected Serial", sel_sn)
+                m2.metric("Drive Model", model_nm)
+                m3.metric("Current Status", risk)
+                m4.metric("Failure Risk", prob_str)
+                m5.metric("Days Observed", f"{len(sel_rows)} / 20")
+
+        st.divider()
+
+        # ── 3. Failure Risk Timeline Chart ──
         st.markdown('<div class="chart-header">Failure Risk Timeline</div>', unsafe_allow_html=True)
 
         sel_sn    = st.session_state.selected_serial
