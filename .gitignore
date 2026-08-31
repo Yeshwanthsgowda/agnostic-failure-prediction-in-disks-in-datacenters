@@ -8,4 +8,4 @@ __pycache__/
 *.py[cod]
 *.backup
 .ipynb_checkpoints/
-.system_generated/
+.system_generated/testing/
