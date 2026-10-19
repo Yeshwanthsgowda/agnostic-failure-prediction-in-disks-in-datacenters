@@ -278,13 +278,13 @@ class DriveModelPipeline:
         )
 
         self.model = XGBClassifier(
-            n_estimators=300,
-            max_depth=6,
+            n_estimators=100,
+            max_depth=5,
             learning_rate=0.05,
             scale_pos_weight=scale_pos_weight,
             eval_metric="logloss",
             random_state=42,
-            n_jobs=-1,
+            n_jobs=2,
         )
         self.model.fit(X_train, y_train)
         logger.info("Model training complete.")

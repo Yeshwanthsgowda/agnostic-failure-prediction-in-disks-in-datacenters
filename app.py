@@ -187,7 +187,13 @@ def init_session_state():
         import os
         from dotenv import load_dotenv
         load_dotenv()
-        st.session_state.groq_api_key = os.environ.get("GROQ_API_KEY", "")
+        key = os.environ.get("GROQ_API_KEY", "")
+        if not key:
+            try:
+                key = st.secrets.get("GROQ_API_KEY", "")
+            except Exception:
+                pass
+        st.session_state.groq_api_key = key
 
     if "selected_serial" not in st.session_state:
         st.session_state.selected_serial = "DEMO_DRIVE_001"
