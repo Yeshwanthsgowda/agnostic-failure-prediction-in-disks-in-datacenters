@@ -9,3 +9,6 @@ __pycache__/
 *.backup
 .ipynb_checkpoints/
 .system_generated/testing/
+
+testing/
+backup_models/
