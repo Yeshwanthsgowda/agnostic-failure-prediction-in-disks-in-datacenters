@@ -988,13 +988,23 @@ SYSTEM RUNBOOK RECOMMENDATION:
 TASK: Write a highly technical, low-level Root Cause Analysis (RCA) narrative. 
 Assume the audience consists of L3 Storage Engineers and Hardware Reliability SREs.
 
-CRITICAL INSTRUCTION: DO NOT generate any markdown tables or repeat the raw SMART/SHAP values. The user already sees a data table in their dashboard. Provide ONLY the written engineering analysis.
+CRITICAL INSTRUCTIONS:
+- DO NOT generate markdown tables or repeat raw SMART/SHAP values (the user already sees those in the dashboard).
+- Use **bold markdown** to highlight: the primary failure mode diagnosis, specific SMART attribute names, critical risk terms (e.g., **Magnetic Platter Degradation**, **SMART 187**, **URE Risk**, **P1 Evacuation Required**).
+- Use section headers with bold text for each of the 4 sections below.
+- Provide ONLY the written engineering analysis in paragraph form.
 
-The RCA must rigorously cover in paragraphs:
-1. LOW-LEVEL MECHANICAL/FIRMWARE RCA: What is physically failing inside the chassis (e.g., servo tracking degradation, thermal asperities, read/write head micro-crashes, ECC exhaustion, platter defect propagation, or bus interface CRC timeouts) based strictly on the provided attributes.
-2. DEGRADATION KINETICS: Explain the mechanical or electrical mechanism of how these specific SMART trends correlate and cascade towards catastrophic failure.
-3. BLAST RADIUS & RISK: The immediate threat to the RAID array/storage pool, rebuild IOPS implications, and URE (Unrecoverable Read Error) risks.
-4. HARDWARE REMEDIATION: Specific low-level operational steps (e.g., NVMe/SAS lane isolation, LBA mapping analysis, node drain, physical spindown procedures).
+**1. Low-Level Mechanical/Firmware RCA**
+What is physically failing inside the chassis (e.g., servo tracking degradation, thermal asperities, read/write head micro-crashes, ECC exhaustion, platter defect propagation, or bus interface CRC timeouts) based strictly on the provided attributes.
+
+**2. Degradation Kinetics**
+Explain the mechanical or electrical mechanism of how these specific SMART trends correlate and cascade towards catastrophic failure.
+
+**3. Blast Radius & Risk**
+The immediate threat to the RAID array/storage pool, rebuild IOPS implications, and URE (Unrecoverable Read Error) risks.
+
+**4. Hardware Remediation**
+Specific low-level operational steps (e.g., NVMe/SAS lane isolation, LBA mapping analysis, node drain, physical spindown procedures).
 
 Tone: Extremely technical, precise, objective, and analytical. No introductory fluff, no emojis, no generic advice. Use strict storage engineering terminology."""
 
