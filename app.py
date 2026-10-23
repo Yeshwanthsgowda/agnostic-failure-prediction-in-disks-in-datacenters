@@ -1289,15 +1289,14 @@ def render_tab2(tab):
                             type="secondary",
                         ):
                             del st.session_state.groq_rca_cache[sn]
+                            with st.spinner("Regenerating AI RCA narrative..."):
+                                _call_groq_llm(sn, model_name, rca, groq_key)
                             st.rerun()
                     else:
-                        if not groq_key:
-                            st.info(
-                                "Paste your **Groq API Key** in the sidebar to enable AI-powered RCA.  \n"
-                                "The SHAP attribution above is the deterministic analysis."
-                            )
-                        elif not GROQ_AVAILABLE:
+                        if not GROQ_AVAILABLE:
                             st.warning("Groq Python package not installed. Run: `pip install groq`")
+                        elif not groq_key:
+                            st.info("AI-powered RCA is not configured. Contact the administrator.")
                         else:
                             if st.button(
                                 "Generate AI Root Cause Analysis",
@@ -1305,7 +1304,7 @@ def render_tab2(tab):
                                 type="primary",
                             ):
                                 with st.spinner("Calling Groq LLM — generating RCA narrative..."):
-                                    llm_text = _call_groq_llm(sn, model_name, rca, groq_key)
+                                    _call_groq_llm(sn, model_name, rca, groq_key)
                                 st.rerun()
 
 
