@@ -610,25 +610,6 @@ def render_sidebar():
 
         st.divider()
 
-        # ── Groq API Key ──
-        st.markdown('<div class="sidebar-section">AI Integration</div>', unsafe_allow_html=True)
-        groq_key = st.text_input(
-            "Groq API Key",
-            value=st.session_state.groq_api_key,
-            type="password",
-            placeholder="gsk_...",
-            help="Required for AI-generated RCA in the Alerts tab.",
-        )
-        if groq_key != st.session_state.groq_api_key:
-            st.session_state.groq_api_key = groq_key
-
-        if groq_key:
-            st.markdown('<span class="badge-online">AI RCA Enabled</span>', unsafe_allow_html=True)
-        else:
-            st.caption("Paste a Groq key to enable AI-generated RCA in Tab 2.")
-
-        st.divider()
-
         # ── Active Models ──
         st.markdown('<div class="sidebar-section">Active Models</div>', unsafe_allow_html=True)
         for model_name in st.session_state.router.list_models():
